@@ -19,6 +19,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER salesforce AFTER INSERT ON "GuestUser"
-    FOR EACH ROW EXECUTE PROCEDURE notify_trigger();
+    FOR EACH ROW EXECUTE FUNCTION notify_trigger();
 
 END;
