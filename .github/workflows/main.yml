@@ -36,6 +36,15 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cat /tmp/docker-postgres.tar.gz | docker load
+          
+    - name: Create Docker network on EC2 (if not exists)
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker network create ec2public || true
 
     - name: Run Docker container on EC2 instance
       uses: appleboy/ssh-action@master
@@ -44,4 +53,4 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker run -d -p 5432:5432 docker-postgres
+          docker run --network=ec2public -d -p 5432:5432 --name postgresdb docker-postgres
